@@ -1,0 +1,26 @@
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+</style>
+<body>
+<h1>Register New User</h1>
+<form method="POST">
+  {% csrf_token %}
+  <input type="text" name="username" placeholder="Username">
+  <input type="email" name="email" placeholder="Email">
+  <input type="password" name="password" placeholder="Password">
+  <button type="submit">Register</button>
+</form>
+</body>
