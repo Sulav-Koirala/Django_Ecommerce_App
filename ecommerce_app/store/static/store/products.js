@@ -4,7 +4,7 @@ function get_products(){
     fetch('api/products/')
     .then(res => {
         if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${res.status}`);
+            throw new Error(`Error, Status: ${res.status}`);
         }
         return res.json();
     })
@@ -115,3 +115,23 @@ document.getElementById("update-submit").addEventListener("click", () => {
         console.error(err)});
 });
 
+document.getElementById("list").addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete")) {
+        const id = e.target.dataset.id;
+    
+        if (!confirm("Are you sure you want to delete this product?")) return;
+
+        fetch(`api/products/${id}/`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRFToken": csrftoken
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error ("Delete Failed");
+            alert("Deleted successfully");
+            get_products();
+        })
+        .catch(err => console.error(err));
+    }
+});
