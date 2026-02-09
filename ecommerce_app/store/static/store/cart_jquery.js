@@ -13,6 +13,7 @@ $('#list').on('click', '.addtocart', function(){
                 </div>`;
             $('#cart-items').append(html);
             $('#cart-total').text(`Total: $ ${p.total}`);
+            $('#checkout').html(`<button class="checkout">Checkout</button>`);
         },
         error: function (xhr) {
             console.error(xhr.responseText);}
@@ -35,5 +36,24 @@ $('#cart').on('click', '.removefromcart', function(){
         error: function(xhr){
             console.error(xhr.responseText);
         }
+    });
+});
+
+$('#cart').on('click', '.checkout', function(){
+    $.ajax({
+        url: "api/cart/checkout/",
+        type: 'POST',
+        headers: {'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')},
+        success: function(res){
+            if(res.success){
+                alert(`Order placed successfully! Order ID: ${res.order_id}`);
+                $('#cart-items').empty();
+                $('#cart-total').text('Total: $ 0');
+                $('#cart').hide();
+            }
+        },
+        error: function(xhr){
+            console.error(xhr.responseText);
+            alert("Failed to checkout");}
     });
 });

@@ -9,14 +9,14 @@ class Product(models.Model):
         return self.name
     
 class Order(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_price = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 class OrderItem(models.Model):
-    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     price = models.FloatField()
     class Meta:
-        unique_together = ('order_id', 'product_id')
+        unique_together = ('order', 'product')

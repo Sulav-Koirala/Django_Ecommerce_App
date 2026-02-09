@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from .models import Product
+from .models import Product,Order,OrderItem
 
 def home(request):
     isadminuser = False
@@ -87,3 +87,24 @@ def delete_from_cart(request,product_id):
         'removed_id' : product_id,
         'total' : float(total)
     })
+
+def checkout(request):
+    cart = request.session.get('cart', {})
+    if not cart:
+        return JsonResponse({'error': 'Cart is empty'}, status=400)
+    total = 0
+    order = Order.objects.create(user=request.user, total_price=0)
+    for pid, qty in cart.items():
+        product = Product.objects.get(id=pid)
+        OrderItem.objects.create(
+            order = order,
+            product = product,
+            quantity = qty,
+            price = product.price
+        )
+        total += product.price * qty
+    order.total_price = total
+    order.save()
+    request.session['cart'] = {}
+    request.session.modified = True
+    return JsonResponse({'success': True,'order_id': order.id})
