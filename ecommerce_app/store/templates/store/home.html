@@ -30,6 +30,8 @@
     </script>
     {% load static %}
     <script src="{% static 'store/products.js' %}" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{% static 'store/cart_jquery.js' %}" defer></script>
 </head>
 <body>
     <h2>Welcome to my ecommerce app</h2>
@@ -56,6 +58,8 @@
         <button type="button" id="update-submit">Update</button>
     </div>
     {% endif %}
+    <br><br>
+    <div id="cart" style="display: none; margin-top: 10px;"></div>
     <br><br>
     <a style="border: 2px solid grey; background-color: lightgrey; color:black" href="{% url 'store:logout' %}">log out</a>
 </body>

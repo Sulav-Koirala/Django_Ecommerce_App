@@ -19,7 +19,7 @@ function get_products(){
             if (isAdminUser){  
                 html += `<button class="update" data-id="${p.id}">Update Details</button>
                         <button class="delete" data-id="${p.id}">Delete Product</button>`}
-            html += `<button>Add to Cart</button>
+            html += `<button class="addtocart" data-id="${p.id}">Add to Cart</button>
                     </div>`;
         });
         document.getElementById('list').innerHTML = html;
@@ -85,35 +85,38 @@ document.getElementById("list").addEventListener("click", (e) => {
     }
 });
 
-document.getElementById("update-submit").addEventListener("click", () => {
-    const id = document.getElementById("update-id").value;
-    const name = document.getElementById("update-name").value;
-    const price = document.getElementById("update-price").value;
-    const quantity = document.getElementById("update-quantity").value;
+const updateBtn = document.getElementById("update-submit");
+if (updateBtn) {
+    updateBtn.addEventListener("click", () => {
+        const id = document.getElementById("update-id").value;
+        const name = document.getElementById("update-name").value;
+        const price = document.getElementById("update-price").value;
+        const quantity = document.getElementById("update-quantity").value;
 
-    fetch(`api/products/${id}/`,{
-        method: "PATCH",
-        headers: {
-            "Content-Type" : "application/json",
-            "X-CSRFToken" : csrftoken
-        },
-        body: JSON.stringify({name,price,quantity})
-    })
-    .then(res => {
-        if (!res.ok){
-            return res.json().then(err => { throw err});
-        }
-        return res.json();
-    })
-    .then(data => {
-        alert("Product details updated!");
-        document.getElementById("update-container").style.display="none";
-        get_products();
-    })
-    .catch(err => {
-        alert("Failed");
-        console.error(err)});
-});
+        fetch(`api/products/${id}/`,{
+            method: "PATCH",
+            headers: {
+                "Content-Type" : "application/json",
+                "X-CSRFToken" : csrftoken
+            },
+            body: JSON.stringify({name,price,quantity})
+        })
+        .then(res => {
+            if (!res.ok){
+                return res.json().then(err => { throw err});
+            }
+            return res.json();
+        })
+        .then(data => {
+            alert("Product details updated!");
+            document.getElementById("update-container").style.display="none";
+            get_products();
+        })
+        .catch(err => {
+            alert("Failed");
+            console.error(err)});
+    });
+}
 
 document.getElementById("list").addEventListener("click", (e) => {
     if (e.target.classList.contains("delete")) {
