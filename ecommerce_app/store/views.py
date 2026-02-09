@@ -50,6 +50,21 @@ def logout_user(request):
     logout(request)
     return redirect('store:login')
 
+def get_cart(request):
+    cart = request.session.get('cart', {})
+    data = []
+    total = 0
+    for product_id, qty in cart.items():
+        product = Product.objects.get(id=product_id)
+        data.append({
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
+            'cart_quantity': qty
+        })
+        total += product.price * qty
+    return JsonResponse({'items': data, 'total': total})
+
 def add_to_cart(request,product_id):
     cart = request.session.get('cart', {})
     id = str(product_id)

@@ -1,3 +1,27 @@
+$(document).ready(function(){
+    $.ajax({
+        url: 'api/cart/',
+        type: 'GET',
+        success: function(res){
+            if(res.items.length > 0){
+                $('#cart').show();
+                res.items.forEach(function(p){
+                    let html = `
+                        <div class="description" id="cart-item-${p.id}">
+                            <p>Name: ${p.name}</p>
+                            <p>Price: ${p.price}</p>
+                            <p>Qty: ${p.cart_quantity}</p>
+                            <button class="removefromcart" data-id="${p.id}">Remove</button>
+                        </div>`;
+                    $('#cart-items').append(html);
+                });
+                $('#cart-total').text(`Total: $ ${res.total}`);
+                $('#checkout').html(`<button class="checkout">Checkout</button>`);
+            }
+        }
+    });
+});
+
 $('#list').on('click', '.addtocart', function(){
     const id = $(this).data('id');
     $.ajax({
