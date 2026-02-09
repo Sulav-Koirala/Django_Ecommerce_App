@@ -8,12 +8,15 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
-class Cart(models.Model):
+class Order(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_price = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class OrderItem(models.Model):
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    price = models.FloatField()
     class Meta:
-        unique_together = ('user_id', 'product_id')
-    def __str__(self):
-        return f"{self.user_id.username} => {self.product_id.name} X {self.quantity}"
-
+        unique_together = ('order_id', 'product_id')

@@ -1,6 +1,3 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAdminUser,AllowAny
 from .models import Product
 from .serializers import ProductSerializer
@@ -13,6 +10,3 @@ class ProductAPIview(ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
         return [AllowAny()]
-
-class CartAPIview(APIView):
-    pass
