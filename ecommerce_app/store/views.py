@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from .models import Product
 
 def home(request):
     isadminuser = False
@@ -47,3 +49,41 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('store:login')
+
+def add_to_cart(request,product_id):
+    cart = request.session.get('cart', {})
+    id = str(product_id)
+    if id in cart:
+        cart[id] += 1
+    else:
+        cart[id] = 1
+    request.session['cart'] = cart
+    request.session.modified = True
+    product = Product.objects.get(id=product_id)
+    total = 0
+    for pid, qty in cart.items():
+        p=Product.objects.get(id=pid)
+        total += p.price * qty
+    return JsonResponse({
+        'id': product.id,
+        'name': product.name,
+        'price': product.price,
+        'cart_quantity': cart[id],
+        'total': float(total)
+    })
+
+def delete_from_cart(request,product_id):
+    cart = request.session.get('cart' , {})
+    id = str(product_id)
+    if id in cart:
+        del cart[id]
+    request.session['cart'] = cart
+    request.session.modified = True
+    total=0
+    for pid,qty in cart.items():
+        p = Product.objects.get(id = pid)
+        total += p.price * qty
+    return JsonResponse({
+        'removed_id' : product_id,
+        'total' : float(total)
+    })

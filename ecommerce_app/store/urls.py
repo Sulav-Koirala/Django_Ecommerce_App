@@ -13,4 +13,6 @@ urlpatterns = [
     path("register/", views.register, name= "register"),
     path("logout/", views.logout_user, name="logout"),
     path('api/',include(router.urls)),
+    path('api/cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('api/cart/delete/<int:product_id>/', views.delete_from_cart, name='delete_from_cart'),
 ]
